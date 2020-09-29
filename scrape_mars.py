@@ -7,17 +7,17 @@ import requests
 
 # Initialize browser
 def init_browser(): 
-    exec_path = {'executable_path': '/app/.chromedriver/bin/chromedriver'}
+    exec_path = {'executable_path': 'chromedriver'}
     return Browser('chrome', headless=True, **exec_path)
 
 # Create global dictionary to be imported into Mongo
 mars_info = {}
 
+browser = init_browser()
+
 # A. NASA MARS NEWS
 def scrape_mars_news():
     try: 
-
-        browser = init_browser()
 
         # Use Splinter Module to Visit Nasa news url
         url = 'https://mars.nasa.gov/news/'
@@ -39,21 +39,23 @@ def scrape_mars_news():
 
         return mars_info
 
-    finally:
+    except:
+        print('error scraping news')
 
-        browser.quit()
+        #finally:
+
+        #browser.quit()
 
 # B. FEATURED IMAGE
 def scrape_mars_image():
 
     try: 
-        browser = init_browser()
-        wait_time = 1
-        #browser.is_element_present_by_css("img.jpg", wait_time=1)
 
         # Visit Mars Space Images through splinter module
-        featured_image_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
-        browser.visit(feat_image)# Visit Mars Space Images through splinter module
+        feat_image = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
+        
+        # Visit Mars Space Images through splinter module
+        browser.visit(feat_image)
 
         html_image = browser.html
 
@@ -63,7 +65,6 @@ def scrape_mars_image():
         # get image 
         feat_image_url  = soup.find('article')['style'].replace('background-image: url(','').replace(');', '')[1:-1]
 
-        # Website Url 
         main_url = 'https://www.jpl.nasa.gov'
 
         # Concatenate website url with scrapped route
@@ -73,12 +74,15 @@ def scrape_mars_image():
         feat_image_url 
 
         # Dictionary entry from FEATURED IMAGE
-        mars_info['feat_image_url'] = feat_image_url 
+        #mars_info['feat_image_url'] = feat_image_url
         
-        return mars_info
-    finally:
+        return feat_image_url
+        
+    except:
+        print('error scraping news')    
+    #finally:
 
-        browser.quit()
+        #browser.quit()
 
 
 # C. Mars Facts
@@ -103,9 +107,9 @@ def scrape_mars_facts():
     data = mars_df.to_html()
 
     
-    mars_info['mars_facts'] = data
+    #mars_info['mars_facts'] = data
 
-    return mars_info
+    return data
 
 
 # D. MARS HEMISPHERES
@@ -113,7 +117,7 @@ def scrape_mars_facts():
 def scrape_mars_hemispheres():
 
     try: 
-        browser = init_browser()
+        #browser = init_browser()
 
         # Use splinter to go to the  hemispheres website 
         hemi_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
@@ -156,12 +160,15 @@ def scrape_mars_hemispheres():
             # Append info into a list of dictionaries 
             hemi_image_urls.append({"title" : title, "img_url" : img_url})
 
-        mars_info['hemisphere_image_urls'] = hemi_image_urls
-
+        
+        print(hemi_image_urls)
         
         # Return mars_data dictionary 
 
-        return mars_info
-    finally:
+        return hemi_image_urls
 
-        browser.quit()
+    except:
+        print('error scraping news')
+    #finally:
+
+       # browser.quit()
